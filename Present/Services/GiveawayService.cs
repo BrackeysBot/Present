@@ -268,6 +268,8 @@ internal sealed class GiveawayService : BackgroundService
     /// <exception cref="ArgumentNullException"><paramref name="giveaway" /> is <see langword="null" />.</exception>
     public async Task EndGiveawayAsync(Giveaway giveaway)
     {
+        ArgumentNullException.ThrowIfNull(giveaway);
+
         giveaway.EndHandled = true;
         giveaway.EndTime = DateTimeOffset.UtcNow;
 
