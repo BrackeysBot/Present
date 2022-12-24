@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  present:
+    container_name: Present
+    pull_policy: build
+    build: https://github.com/BrackeysBot/Present.git#main
+    volumes:
+      - type: bind
+        source: /var/log/brackeysbot/present
+        target: /app/logs
+      - type: bind
+        source: /etc/brackeysbot/present
+        target: /app/data
+    restart: always
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
