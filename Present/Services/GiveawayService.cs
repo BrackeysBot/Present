@@ -658,6 +658,8 @@ internal sealed class GiveawayService : BackgroundService
 
     private async Task UpdateFromDatabaseAsync(CancellationToken cancellationToken)
     {
+        Logger.Info("Caching giveaways from the database...");
+
         await using AsyncServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
         await using var context = scope.ServiceProvider.GetRequiredService<GiveawayContext>();
         await context.Database.EnsureCreatedAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
