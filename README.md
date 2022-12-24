@@ -3,7 +3,7 @@
 <p align="center"><i>A Discord bot for managing giveaways.</i></p>
 <p align="center">
 <a href="https://github.com/BrackeysBot/Present/releases"><img src="https://img.shields.io/github/v/release/BrackeysBot/Present?include_prereleases"></a>
-<a href="https://github.com/BrackeysBot/Present/actions?query=workflow%3A%22.NET%22"><img src="https://img.shields.io/github/workflow/status/BrackeysBot/Present/.NET" alt="GitHub Workflow Status" title="GitHub Workflow Status"></a>
+<a href="https://github.com/BrackeysBot/Present/actions?query=workflow%3A%22.NET%22"><img src="https://img.shields.io/github/actions/workflow/status/BrackeysBot/Present/dotnet.yml" alt="GitHub Workflow Status" title="GitHub Workflow Status"></a>
 <a href="https://github.com/BrackeysBot/Present/issues"><img src="https://img.shields.io/github/issues/BrackeysBot/Present" alt="GitHub Issues" title="GitHub Issues"></a>
 <a href="https://github.com/BrackeysBot/Present/blob/main/LICENSE.md"><img src="https://img.shields.io/github/license/BrackeysBot/Present" alt="MIT License" title="MIT License"></a>
 </p>
