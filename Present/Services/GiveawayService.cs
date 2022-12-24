@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using CSharpVitamins;
 using DSharpPlus;
@@ -201,7 +201,7 @@ internal sealed class GiveawayService : BackgroundService
         List<ulong> winnerIds = giveaway.WinnerIds;
         if (winnerIds.Count > 0)
         {
-            string winnerList = string.Join('\n', giveaway.WinnerIds.Select(w => $"• {MentionUtility.MentionUser(w)} ({w})"));
+            string winnerList = string.Join('\n', winnerIds.Select(w => $"• {MentionUtility.MentionUser(w)} ({w})"));
             embed.AddField(EmbedStrings.Winner.ToQuantity(winnerIds.Count), winnerList);
         }
 
