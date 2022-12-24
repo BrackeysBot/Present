@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+
+    <data name="InvalidRole_Description" xml:space="preserve">
+        <value>The specified role was not found.</value>
+    </data>
+    <data name="InvalidUser_Description" xml:space="preserve">
+        <value>The specified user was not found.</value>
+    </data>
+
+    <data name="BlockRole_AlreadyExcluded" xml:space="preserve">
+        <value>The role {0} is already excluded.</value>
+    </data>
+    <data name="BlockRole_Success" xml:space="preserve">
+        <value>Members with the role {0} are now excluded from winning giveaways.</value>
+    </data>
+
+    <data name="BlockUser_AlreadyExcluded" xml:space="preserve">
+        <value>The user {0} is already excluded.</value>
+    </data>
+    <data name="BlockUser_Success" xml:space="preserve">
+        <value>The user {0} is now excluded from winning giveaways.</value>
+    </data>
+
+    <data name="UnblockRole_AlreadyExcluded" xml:space="preserve">
+        <value>The role {0} was not already excluded.</value>
+    </data>
+    <data name="UnblockRole_Success" xml:space="preserve">
+        <value>Members with the role {0} are no longer excluded from winning giveaways.</value>
+    </data>
+
+    <data name="UnblockUser_AlreadyExcluded" xml:space="preserve">
+        <value>The user {0} was not already excluded.</value>
+    </data>
+    <data name="UnblockUser_Success" xml:space="preserve">
+        <value>The user {0} is no longer excluded from winning giveaways.</value>
+    </data>
+
+    <data name="AlreadyExcluded" xml:space="preserve">
+        <value>⚠️ Already excluded</value>
+    </data>
+    <data name="NoActionTaken" xml:space="preserve">
+        <value>⚠️ No action taken</value>
+    </data>
+    <data name="ExclusionAdded" xml:space="preserve">
+        <value>✅ Exclusion added</value>
+    </data>
+    <data name="ExclusionRemoved" xml:space="preserve">
+        <value>✅ Exclusion removed</value>
+    </data>
+    <data name="GiveawayCreated_Title" xml:space="preserve">
+        <value>🎉 Giveaway created</value>
+    </data>
+    <data name="GiveawayCreated_Title_NoEmoji" xml:space="preserve">
+        <value>Giveaway created</value>
+    </data>
+    <data name="GiveawayCreated_Description" xml:space="preserve">
+        <value>The giveaway **{0}** was created in {1}.</value>
+    </data>
+    <data name="GiveawayCreationFailed" xml:space="preserve">
+        <value>⚠️ Failed to create giveaway</value>
+    </data>
+    <data name="GiveawayCreation_NoDescription" xml:space="preserve">
+        <value>Please provide a description for the giveaway.</value>
+    </data>
+    <data name="GiveawayCreation_NoTitle" xml:space="preserve">
+        <value>Please provide a title for the giveaway.</value>
+    </data>
+    <data name="GiveawayCreation_InvalidTimestamp" xml:space="preserve">
+        <value>Please enter either a Unix timestamp (in seconds), or a relative timestamp (e.g. 2d6h).</value>
+    </data>
+    <data name="GiveawayCreation_FutureTimestamp" xml:space="preserve">
+        <value>You must enter a timestamp in the future.</value>
+    </data>
+    <data name="InvalidGiveawayId" xml:space="preserve">
+        <value>⚠️ Invalid giveaway ID</value>
+    </data>
+    <data name="InvalidRole" xml:space="preserve">
+        <value>⚠️ Invalid role</value>
+    </data>
+    <data name="InvalidUser" xml:space="preserve">
+        <value>⚠️ Invalid user</value>
+    </data>
+    <data name="InvalidId" xml:space="preserve">
+        <value>The specified value `{0}` is not a valid ID.</value>
+    </data>
+    <data name="NoGiveawayFound" xml:space="preserve">
+        <value>No giveaway with the ID `{0}` was found for this guild.</value>
+    </data>
+    <data name="GiveawayIsNotActive" xml:space="preserve">
+        <value>The specified giveaway is not active, and so cannot be ended.</value>
+    </data>
+    <data name="LogChannel_MoreDetails" xml:space="preserve">
+        <value>For more details, see {0}.</value>
+    </data>
+
+    <data name="GiveawayInformation" xml:space="preserve">
+        <value>Giveaway Information</value>
+    </data>
+    <data name="Id" xml:space="preserve">
+        <value>ID</value>
+    </data>
+    <data name="NumberOfWinners" xml:space="preserve">
+        <value>Number of Winners</value>
+    </data>
+    <data name="Reason" xml:space="preserve">
+        <value>Reason</value>
+    </data>
+    <data name="Role" xml:space="preserve">
+        <value>Role</value>
+    </data>
+    <data name="RoleExclusionAdded" xml:space="preserve">
+        <value>Role Exclusion Added</value>
+    </data>
+    <data name="StaffMember" xml:space="preserve">
+        <value>Staff Member</value>
+    </data>
+    <data name="Title" xml:space="preserve">
+        <value>Title</value>
+    </data>
+    <data name="Channel" xml:space="preserve">
+        <value>Channel</value>
+    </data>
+    <data name="Creator" xml:space="preserve">
+        <value>Creator</value>
+    </data>
+    <data name="Description" xml:space="preserve">
+        <value>Description</value>
+    </data>
+    <data name="Duration" xml:space="preserve">
+        <value>Duration</value>
+    </data>
+    <data name="Message" xml:space="preserve">
+        <value>Message</value>
+    </data>
+    <data name="User" xml:space="preserve">
+        <value>User</value>
+    </data>
+    <data name="Ended" xml:space="preserve">
+        <value>Ended</value>
+    </data>
+    <data name="Ends" xml:space="preserve">
+        <value>Ends</value>
+    </data>
+    <data name="Entrants" xml:space="preserve">
+        <value>Entrants</value>
+    </data>
+    <data name="ExcludedEntrants" xml:space="preserve">
+        <value>Excluded Entrants</value>
+    </data>
+    <data name="Started" xml:space="preserve">
+        <value>Started</value>
+    </data>
+    <data name="Winner" xml:space="preserve">
+        <value>Winner</value>
+    </data>
+    <data name="Winners" xml:space="preserve">
+        <value>Winners</value>
+    </data>
+
+    <data name="GiveawayTitle_Ended" xml:space="preserve">
+        <value>[ENDED] GIVEAWAY: </value>
+    </data>
+    <data name="GiveawayTitle_Ongoing" xml:space="preserve">
+        <value>🎉 GIVEAWAY: </value>
+    </data>
+    <data name="JoinGiveawayFooter" xml:space="preserve">
+        <value>Enter by hitting the button below.</value>
+    </data>
+
+    <data name="GiveawayEnded_NoWinners_Title" xml:space="preserve">
+        <value>Giveaway ended with no winners</value>
+    </data>
+    <data name="GiveawayEnded_NoWinners_Description" xml:space="preserve">
+        <value>The giveaway {giveaway.Id} (**{giveaway.Title}**) ended with no winners selected.</value>
+    </data>
+    <data name="GiveawayEnded_FewWinners_Title" xml:space="preserve">
+        <value>Giveaway ended with fewer winners than specified</value>
+    </data>
+    <data name="GiveawayEnded_FewWinners_Description" xml:space="preserve">
+        <value>The giveaway {giveaway.Id} (**{giveaway.Title}**) ended with {winners}, but expected {giveaway.WinnerCount}.</value>
+    </data>
+    <data name="GiveawayEnded_Title" xml:space="preserve">
+        <value>Giveaway ended</value>
+    </data>
+    <data name="GiveawayEnded_Description" xml:space="preserve">
+        <value>The giveaway {giveaway.Id} (**{giveaway.Title}**) ended with {winners}.</value>
+    </data>
+    <data name="GiveawayEnded" xml:space="preserve">
+        <value>🎉 Giveaway of **{giveaway.Title}** has ended! If you've won, you will be DM'd by staff shortly. Please ensure that you have DMs enabled! If we can't reach you, you will forfeit your win.</value>
+    </data>
+</root>
