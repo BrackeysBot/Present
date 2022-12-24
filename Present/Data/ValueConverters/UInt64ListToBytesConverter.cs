@@ -31,7 +31,7 @@ internal sealed class UInt64ListToBytesConverter : ValueConverter<List<ulong>, b
 
         var list = new List<ulong>(listCount);
 
-        for (var index = 0; index < list.Count; index++)
+        for (var index = 0; index < listCount; index++)
             list.Add(reader.ReadUInt64());
 
         return list;

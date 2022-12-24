@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using CSharpVitamins;
 using DSharpPlus;
@@ -201,7 +201,7 @@ internal sealed class GiveawayService : BackgroundService
         List<ulong> winnerIds = giveaway.WinnerIds;
         if (winnerIds.Count > 0)
         {
-            string winnerList = string.Join('\n', giveaway.WinnerIds.Select(w => $"• {MentionUtility.MentionUser(w)} ({w})"));
+            string winnerList = string.Join('\n', winnerIds.Select(w => $"• {MentionUtility.MentionUser(w)} ({w})"));
             embed.AddField(EmbedStrings.Winner.ToQuantity(winnerIds.Count), winnerList);
         }
 
@@ -268,6 +268,8 @@ internal sealed class GiveawayService : BackgroundService
     /// <exception cref="ArgumentNullException"><paramref name="giveaway" /> is <see langword="null" />.</exception>
     public async Task EndGiveawayAsync(Giveaway giveaway)
     {
+        ArgumentNullException.ThrowIfNull(giveaway);
+
         giveaway.EndHandled = true;
         giveaway.EndTime = DateTimeOffset.UtcNow;
 
@@ -656,6 +658,8 @@ internal sealed class GiveawayService : BackgroundService
 
     private async Task UpdateFromDatabaseAsync(CancellationToken cancellationToken)
     {
+        Logger.Info("Caching giveaways from the database...");
+
         await using AsyncServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
         await using var context = scope.ServiceProvider.GetRequiredService<GiveawayContext>();
         await context.Database.EnsureCreatedAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
