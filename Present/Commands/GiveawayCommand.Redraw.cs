@@ -9,11 +9,11 @@ namespace Present.Commands;
 
 internal sealed partial class GiveawayCommand
 {
-    [SlashCommand(CommandNames.SetWinners, CommandDescriptions.End, false)]
+    [SlashCommand(CommandNames.Redraw, CommandDescriptions.Redraw, false)]
     [SlashRequireGuild]
-    public async Task SetWinnersAsync(InteractionContext context,
-        [Option(OptionNames.Id, OptionDescriptions.EndGiveawayId)] string idRaw,
-        [Option(OptionNames.WinnerCount, OptionDescriptions.WinnerCount)] long winnerCount
+    public async Task RedrawAsync(InteractionContext context,
+        [Option(OptionNames.Id, OptionDescriptions.RedrawGiveawayId)] string idRaw,
+        [Option(OptionNames.KeepIds, OptionDescriptions.RedrawKeep)] string? keepIds = null
     )
     {
         var embed = new DiscordEmbedBuilder();
@@ -35,21 +35,30 @@ internal sealed partial class GiveawayCommand
             return;
         }
 
-        if (!_activeGiveawayService.IsGiveawayActive(giveaway))
+        if (_activeGiveawayService.IsGiveawayActive(giveaway))
         {
-            embed.WithDescription(string.Format(EmbedStrings.GiveawayIsNotActive, giveawayId));
+            embed.WithDescription(string.Format(EmbedStrings.GiveawayIsActive, giveawayId));
             await context.CreateResponseAsync(embed, true).ConfigureAwait(false);
             return;
         }
 
-        if (winnerCount == giveaway.WinnerCount)
+        var keep = new List<DiscordMember>();
+        var invalidKeepIds = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(keepIds))
         {
-            embed.WithDescription(string.Format(EmbedStrings.GiveawayUnchanged, giveawayId));
-            await context.CreateResponseAsync(embed, true).ConfigureAwait(false);
-            return;
+            foreach (string keepId in keepIds.Split((char[]?) null, StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (ulong.TryParse(keepId, out ulong userId) &&
+                    _giveawayService.ValidateUser(userId, guild, out DiscordMember? member))
+                    keep.Add(member);
+                else
+                    invalidKeepIds.Add(keepId);
+            }
         }
 
-        giveaway.WinnerCount = (int) winnerCount;
+        IReadOnlyList<DiscordMember> winners = _giveawayService.SelectWinners(giveaway, keep);
+        await _giveawayService.UpdateWinnersAsync(giveaway, winners).ConfigureAwait(false);
 
         await _giveawayService.EditGiveawayAsync(giveaway).ConfigureAwait(false);
         await _giveawayService.UpdateGiveawayLogMessageAsync(giveaway).ConfigureAwait(false);
@@ -58,6 +67,11 @@ internal sealed partial class GiveawayCommand
         embed = _giveawayService.CreateGiveawayInformationEmbed(giveaway);
         embed.WithColor(DiscordColor.Green);
         embed.WithTitle(EmbedStrings.GiveawayEdited_Title);
-        await context.CreateResponseAsync(embed).ConfigureAwait(false);
+
+        string? content = invalidKeepIds.Count > 0
+            ? string.Format(EmbedStrings.InvalidKeepIds, string.Join(", ", invalidKeepIds.Select(i => $"`{i}`")))
+            : null;
+
+        await context.CreateResponseAsync(content, embed).ConfigureAwait(false);
     }
 }

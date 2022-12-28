@@ -511,15 +511,16 @@ internal sealed class GiveawayService : BackgroundService
     }
 
     /// <summary>
-    ///     Selects the winners in the specified giveaway. The number of winners is defined by
-    ///     <see cref="Giveaway.WinnerCount" />.
+    ///     Selects the winners in the specified giveaway, optionally ensuring members to confirm as winners. The number of
+    ///     winners is defined by <see cref="Giveaway.WinnerCount" />.
     /// </summary>
     /// <param name="giveaway">The giveaway whose winners to select.</param>
+    /// <param name="winnersToKeep">An enumerable collection of members that are guaranteed to win this giveaway.</param>
     /// <returns>
     ///     The selected winners of the giveaway. The returned list does not include invalid users, users which are no longer in
     ///     the guild, or users with at least one of the excluded role IDs.
     /// </returns>
-    public IReadOnlyList<DiscordMember> SelectWinners(Giveaway giveaway)
+    public IReadOnlyList<DiscordMember> SelectWinners(Giveaway giveaway, IEnumerable<DiscordMember>? winnersToKeep = null)
     {
         ArgumentNullException.ThrowIfNull(giveaway);
 
@@ -527,7 +528,7 @@ internal sealed class GiveawayService : BackgroundService
             return ArraySegment<DiscordMember>.Empty;
 
         var entrants = new HashSet<ulong>(giveaway.Entrants);
-        var winners = new List<DiscordMember>();
+        var winners = new List<DiscordMember>(winnersToKeep ?? ArraySegment<DiscordMember>.Empty);
 
         while (entrants.Count > 0 && winners.Count < giveaway.WinnerCount)
         {

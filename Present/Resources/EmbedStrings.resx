@@ -110,6 +110,9 @@
     <data name="NoGiveawayFound" xml:space="preserve">
         <value>No giveaway with the ID `{0}` was found for this guild.</value>
     </data>
+    <data name="GiveawayIsActive" xml:space="preserve">
+        <value>The specified giveaway is currently active, and so cannot yet be redrawn.</value>
+    </data>
     <data name="GiveawayIsNotActive" xml:space="preserve">
         <value>The specified giveaway is not active, and so cannot be ended.</value>
     </data>
@@ -118,6 +121,9 @@
     </data>
     <data name="LogChannel_MoreDetails" xml:space="preserve">
         <value>For more details, see {0}.</value>
+    </data>
+    <data name="InvalidKeepIds" xml:space="preserve">
+        <value>The following IDs were ignored because they correspond to invalid or excluded members: {0}</value>
     </data>
 
     <data name="GiveawayInformation" xml:space="preserve">
