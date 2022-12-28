@@ -267,6 +267,15 @@ namespace Present.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Giveaway edited.
+        /// </summary>
+        internal static string GiveawayEdited_Title {
+            get {
+                return ResourceManager.GetString("GiveawayEdited_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 🎉 Giveaway of **{giveaway.Title}** has ended! If you&apos;ve won, you will be DM&apos;d by staff shortly. Please ensure that you have DMs enabled! If we can&apos;t reach you, you will forfeit your win..
         /// </summary>
         internal static string GiveawayEnded {
@@ -362,6 +371,15 @@ namespace Present.Resources {
         internal static string GiveawayTitle_Ongoing {
             get {
                 return ResourceManager.GetString("GiveawayTitle_Ongoing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified giveaway were unchanged..
+        /// </summary>
+        internal static string GiveawayUnchanged {
+            get {
+                return ResourceManager.GetString("GiveawayUnchanged", resourceCulture);
             }
         }
         
