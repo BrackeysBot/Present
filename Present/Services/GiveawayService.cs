@@ -605,10 +605,21 @@ internal sealed class GiveawayService : BackgroundService
         }
 
         DiscordEmbed embed = CreateGiveawayPublicEmbed(giveaway);
+
         var builder = new DiscordMessageBuilder();
         builder.ClearComponents();
         builder.Clear();
         builder.AddEmbed(embed);
+
+        if (giveaway.EndTime > DateTimeOffset.UtcNow)
+        {
+            var componentId = $"join-ga-{giveaway.Id}";
+            Logger.Trace($"Creating button component. Button component ID: {componentId}");
+            var buttonEmoji = new DiscordComponentEmoji(DiscordEmoji.FromUnicode("🎉"));
+            var button = new DiscordButtonComponent(ButtonStyle.Primary, componentId, "Enter Giveaway", emoji: buttonEmoji);
+            builder.AddComponents(button);
+        }
+
         await message.ModifyAsync(builder).ConfigureAwait(false);
     }
 
