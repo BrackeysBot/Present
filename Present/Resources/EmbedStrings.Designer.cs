@@ -348,6 +348,15 @@ namespace Present.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified giveaway is currently active, and so cannot yet be redrawn..
+        /// </summary>
+        internal static string GiveawayIsActive {
+            get {
+                return ResourceManager.GetString("GiveawayIsActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The specified giveaway is not active, and so cannot be ended..
         /// </summary>
         internal static string GiveawayIsNotActive {
@@ -407,6 +416,15 @@ namespace Present.Resources {
         internal static string InvalidId {
             get {
                 return ResourceManager.GetString("InvalidId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following IDs were ignored because they correspond to invalid or excluded members: {0}.
+        /// </summary>
+        internal static string InvalidKeepIds {
+            get {
+                return ResourceManager.GetString("InvalidKeepIds", resourceCulture);
             }
         }
         

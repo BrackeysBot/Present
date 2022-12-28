@@ -8,6 +8,7 @@ internal static class CommandNames
     public const string End = "end";
     public const string Giveaway = "giveaway";
     public const string Info = "info";
+    public const string Redraw = "redraw";
     public const string SetWinners = "setwinners";
     public const string View = "view";
     public const string UnblockRole = "unblockrole";
