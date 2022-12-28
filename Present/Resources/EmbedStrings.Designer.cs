@@ -339,6 +339,15 @@ namespace Present.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Giveaway Entrants.
+        /// </summary>
+        internal static string GiveawayEntrants {
+            get {
+                return ResourceManager.GetString("GiveawayEntrants", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Giveaway Information.
         /// </summary>
         internal static string GiveawayInformation {

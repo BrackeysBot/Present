@@ -11,6 +11,7 @@ internal static class CommandNames
     public const string Redraw = "redraw";
     public const string SetWinners = "setwinners";
     public const string View = "view";
+    public const string ViewEntrants = "viewentrants";
     public const string UnblockRole = "unblockrole";
     public const string UnblockUser = "unblockuser";
 }
