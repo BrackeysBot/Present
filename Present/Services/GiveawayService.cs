@@ -63,6 +63,12 @@ internal sealed class GiveawayService : BackgroundService
     }
 
     /// <summary>
+    ///     Gets a read-only view of every loaded giveaway.
+    /// </summary>
+    /// <value>A <see cref="IReadOnlyList{T}" /> of giveaways.</value>
+    public IReadOnlyList<Giveaway> Giveaways => _giveaways.Values.ToArray();
+
+    /// <summary>
     ///     Announces the giveaway in the channel which the giveaway is hosted.
     /// </summary>
     /// <param name="giveaway">The giveaway to announce.</param>
