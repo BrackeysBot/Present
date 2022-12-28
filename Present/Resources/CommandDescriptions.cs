@@ -12,5 +12,6 @@ internal static class CommandDescriptions
     public const string SetWinners = "Updates the number of winners in an ongoing giveaway.";
     public const string UnblockRole = "Unblocks a role, so they are able to win giveaways.";
     public const string UnblockUser = "Unblocks a user, so they are able to win giveaways.";
+    public const string ViewEntrants = "View the entrants of a giveaway.";
     public const string ViewGiveaway = "View the details of a giveaway.";
 }

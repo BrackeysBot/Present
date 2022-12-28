@@ -126,6 +126,9 @@
         <value>The following IDs were ignored because they correspond to invalid or excluded members: {0}</value>
     </data>
 
+    <data name="GiveawayEntrants" xml:space="preserve">
+        <value>Giveaway Entrants</value>
+    </data>
     <data name="GiveawayInformation" xml:space="preserve">
         <value>Giveaway Information</value>
     </data>
