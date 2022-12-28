@@ -157,10 +157,8 @@ internal sealed class RoleExclusionService : BackgroundService
         ArgumentNullException.ThrowIfNull(guild);
         ArgumentNullException.ThrowIfNull(role);
 
-        if (!_excludedRoles.TryGetValue(guild, out List<ExcludedRole>? excludedRoles))
-            return false;
-
-        return excludedRoles.Exists(u => u.RoleId == role.Id);
+        return _excludedRoles.TryGetValue(guild, out List<ExcludedRole>? excludedRoles) &&
+               excludedRoles.Exists(u => u.RoleId == role.Id);
     }
 
     /// <inheritdoc />

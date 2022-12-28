@@ -113,6 +113,9 @@
     <data name="GiveawayIsNotActive" xml:space="preserve">
         <value>The specified giveaway is not active, and so cannot be ended.</value>
     </data>
+    <data name="GiveawayUnchanged" xml:space="preserve">
+        <value>The specified giveaway were unchanged.</value>
+    </data>
     <data name="LogChannel_MoreDetails" xml:space="preserve">
         <value>For more details, see {0}.</value>
     </data>
@@ -191,6 +194,9 @@
         <value>Enter by hitting the button below.</value>
     </data>
 
+    <data name="GiveawayEdited_Title" xml:space="preserve">
+        <value>Giveaway edited</value>
+    </data>
     <data name="GiveawayEnded_NoWinners_Title" xml:space="preserve">
         <value>Giveaway ended with no winners</value>
     </data>

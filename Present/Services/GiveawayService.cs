@@ -63,6 +63,12 @@ internal sealed class GiveawayService : BackgroundService
     }
 
     /// <summary>
+    ///     Gets a read-only view of every loaded giveaway.
+    /// </summary>
+    /// <value>A <see cref="IReadOnlyList{T}" /> of giveaways.</value>
+    public IReadOnlyList<Giveaway> Giveaways => _giveaways.Values.ToArray();
+
+    /// <summary>
     ///     Announces the giveaway in the channel which the giveaway is hosted.
     /// </summary>
     /// <param name="giveaway">The giveaway to announce.</param>
@@ -190,7 +196,7 @@ internal sealed class GiveawayService : BackgroundService
         embed.AddField(EmbedStrings.Description, description);
         embed.AddField(EmbedStrings.Id, giveaway.Id, true);
         embed.AddField(EmbedStrings.Channel, MentionUtility.MentionChannel(giveaway.ChannelId), true);
-        embed.AddField(EmbedStrings.Message, Formatter.MaskedUrl(giveaway.MessageId.ToString("N0"), jumpLink), true);
+        embed.AddField(EmbedStrings.Message, Formatter.MaskedUrl(giveaway.MessageId.ToString("0"), jumpLink), true);
         embed.AddField(EmbedStrings.NumberOfWinners, giveaway.WinnerCount, true);
         embed.AddField(conjugatedEnd, Formatter.Timestamp(giveaway.EndTime), true);
         embed.AddField(EmbedStrings.Creator, MentionUtility.MentionUser(giveaway.CreatorId), true);
@@ -262,6 +268,21 @@ internal sealed class GiveawayService : BackgroundService
     }
 
     /// <summary>
+    ///     Edits a ongoing giveaway.
+    /// </summary>
+    /// <param name="giveaway">The giveaway to edit.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="giveaway" /> is <see langword="null" />.</exception>
+    public async Task EditGiveawayAsync(Giveaway giveaway)
+    {
+        ArgumentNullException.ThrowIfNull(giveaway);
+
+        await using AsyncServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
+        await using var context = scope.ServiceProvider.GetRequiredService<GiveawayContext>();
+        context.Update(giveaway);
+        await context.SaveChangesAsync().ConfigureAwait(false);
+    }
+
+    /// <summary>
     ///     Ends an ongoing giveaway.
     /// </summary>
     /// <param name="giveaway">The giveaway to end.</param>
@@ -273,10 +294,7 @@ internal sealed class GiveawayService : BackgroundService
         giveaway.EndHandled = true;
         giveaway.EndTime = DateTimeOffset.UtcNow;
 
-        await using AsyncServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
-        await using var context = scope.ServiceProvider.GetRequiredService<GiveawayContext>();
-        context.Update(giveaway);
-        await context.SaveChangesAsync().ConfigureAwait(false);
+        await EditGiveawayAsync(giveaway).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -605,10 +623,21 @@ internal sealed class GiveawayService : BackgroundService
         }
 
         DiscordEmbed embed = CreateGiveawayPublicEmbed(giveaway);
+
         var builder = new DiscordMessageBuilder();
         builder.ClearComponents();
         builder.Clear();
         builder.AddEmbed(embed);
+
+        if (giveaway.EndTime > DateTimeOffset.UtcNow)
+        {
+            var componentId = $"join-ga-{giveaway.Id}";
+            Logger.Trace($"Creating button component. Button component ID: {componentId}");
+            var buttonEmoji = new DiscordComponentEmoji(DiscordEmoji.FromUnicode("🎉"));
+            var button = new DiscordButtonComponent(ButtonStyle.Primary, componentId, "Enter Giveaway", emoji: buttonEmoji);
+            builder.AddComponents(button);
+        }
+
         await message.ModifyAsync(builder).ConfigureAwait(false);
     }
 

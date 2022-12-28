@@ -1,10 +1,9 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Timers;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using Present.Data;
 using Humanizer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
 using Timer = System.Timers.Timer;
@@ -17,7 +16,6 @@ namespace Present.Services;
 internal sealed class ActiveGiveawayService : BackgroundService
 {
     private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly GiveawayService _giveawayService;
     private readonly ConcurrentDictionary<ulong, List<Giveaway>> _activeGiveaways = new();
     private readonly Timer _giveawayTimer = new();
@@ -25,11 +23,9 @@ internal sealed class ActiveGiveawayService : BackgroundService
     /// <summary>
     ///     Initializes a new instance of the <see cref="ActiveGiveawayService" /> class.
     /// </summary>
-    /// <param name="serviceScopeFactory">The service scope factory.</param>
     /// <param name="giveawayService">The giveaway service.</param>
-    public ActiveGiveawayService(IServiceScopeFactory serviceScopeFactory, GiveawayService giveawayService)
+    public ActiveGiveawayService(GiveawayService giveawayService)
     {
-        _serviceScopeFactory = serviceScopeFactory;
         _giveawayService = giveawayService;
 
         _giveawayTimer.Interval = 1000;
@@ -115,12 +111,13 @@ internal sealed class ActiveGiveawayService : BackgroundService
     }
 
     /// <inheritdoc />
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         Logger.Debug($"Starting timer with interval {_giveawayTimer.Interval}");
         _giveawayTimer.Start();
 
-        await UpdateFromDatabaseAsync(stoppingToken).ConfigureAwait(false);
+        UpdateFromDatabase();
+        return Task.CompletedTask;
     }
 
     private async void GiveawayTimerOnElapsed(object? sender, ElapsedEventArgs e)
@@ -169,15 +166,11 @@ internal sealed class ActiveGiveawayService : BackgroundService
         }
     }
 
-    private async Task UpdateFromDatabaseAsync(CancellationToken cancellationToken)
+    private void UpdateFromDatabase()
     {
         Logger.Info("Loading active giveaways from the database...");
 
-        await using AsyncServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
-        await using var context = scope.ServiceProvider.GetRequiredService<GiveawayContext>();
-        await context.Database.EnsureCreatedAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-
-        await foreach (Giveaway giveaway in context.Giveaways)
+        foreach (Giveaway giveaway in _giveawayService.Giveaways)
             AddActiveGiveaway(giveaway);
 
         Logger.Info($"Loaded {"active giveaway".ToQuantity(_activeGiveaways.Count)} from the database");
