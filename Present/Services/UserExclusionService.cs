@@ -157,10 +157,8 @@ internal sealed class UserExclusionService : BackgroundService
         ArgumentNullException.ThrowIfNull(guild);
         ArgumentNullException.ThrowIfNull(user);
 
-        if (!_excludedUsers.TryGetValue(guild, out List<ExcludedUser>? excludedUsers))
-            return false;
-
-        return excludedUsers.Exists(u => u.UserId == user.Id);
+        return _excludedUsers.TryGetValue(guild, out List<ExcludedUser>? excludedUsers) &&
+               excludedUsers.Exists(u => u.UserId == user.Id);
     }
 
     /// <inheritdoc />
