@@ -1,7 +1,9 @@
-﻿using DSharpPlus.SlashCommands;
+﻿using DSharpPlus.Entities;
+using DSharpPlus.SlashCommands;
 using Present.Resources;
 using Present.Services;
 using NLog;
+using Present.Interactivity;
 
 namespace Present.Commands;
 
@@ -40,5 +42,35 @@ internal sealed partial class GiveawayCommand : ApplicationCommandModule
         _activeGiveawayService = activeGiveawayService;
         _roleExclusionService = roleExclusionService;
         _userExclusionService = userExclusionService;
+    }
+
+    private static async Task<DateTimeOffset> ValidateTimeStamp(
+        InteractionContext context,
+        DiscordModalTextInput timeInput,
+        DiscordEmbedBuilder embed,
+        DiscordFollowupMessageBuilder followup
+    )
+    {
+        if (!TimeStampUtility.TryParse(timeInput.Value, out DateTimeOffset endTime))
+        {
+            Logger.Warn($"Provided time was invalid ({timeInput.Value}). Giveaway creation has been cancelled");
+            embed.WithDescription(EmbedStrings.GiveawayCreation_InvalidTimestamp);
+            followup.AsEphemeral();
+            followup.AddEmbed(embed);
+            await context.FollowUpAsync(followup).ConfigureAwait(false);
+            return default;
+        }
+
+        if (endTime < DateTimeOffset.UtcNow)
+        {
+            Logger.Warn($"Provided time ({timeInput.Value}) is in the past. Giveaway creation has been cancelled");
+            embed.WithDescription(EmbedStrings.GiveawayCreation_FutureTimestamp);
+            followup.AsEphemeral();
+            followup.AddEmbed(embed);
+            await context.FollowUpAsync(followup).ConfigureAwait(false);
+            return default;
+        }
+
+        return endTime;
     }
 }

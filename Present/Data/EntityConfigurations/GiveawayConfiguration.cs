@@ -16,7 +16,7 @@ internal sealed class GiveawayConfiguration : IEntityTypeConfiguration<Giveaway>
         builder.ToTable(nameof(Giveaway));
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Id).HasConversion<ShortGuidToBytesConverter>();
+        builder.Property(e => e.Id);
         builder.Property(e => e.StartTime).HasConversion<DateTimeOffsetToBytesConverter>();
         builder.Property(e => e.EndTime).HasConversion<DateTimeOffsetToBytesConverter>();
         builder.Property(e => e.EndHandled);

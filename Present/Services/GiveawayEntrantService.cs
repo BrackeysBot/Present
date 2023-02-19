@@ -1,4 +1,3 @@
-﻿using CSharpVitamins;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -216,7 +215,7 @@ internal sealed class GiveawayEntrantService : BackgroundService
     {
         if (e.User is not DiscordMember member) return; // interaction happened outside of guild
         if (!e.Id.StartsWith("join-ga-")) return;       // not a valid giveaway button
-        if (!ShortGuid.TryParse(e.Id[8..], out ShortGuid giveawayId))
+        if (!long.TryParse(e.Id[8..], out long giveawayId))
         {
             Logger.Warn("Component starting with prefix 'join-ga-' was not one of ours. We shouldn't receive this message!");
             return;
@@ -225,7 +224,7 @@ internal sealed class GiveawayEntrantService : BackgroundService
         await HandleJoinAsync(e.Interaction, giveawayId, member).ConfigureAwait(false);
     }
 
-    private async Task HandleJoinAsync(DiscordInteraction interaction, ShortGuid giveawayId, DiscordMember member)
+    private async Task HandleJoinAsync(DiscordInteraction interaction, long giveawayId, DiscordMember member)
     {
         const InteractionResponseType responseType = InteractionResponseType.ChannelMessageWithSource;
         var builder = new DiscordInteractionResponseBuilder();

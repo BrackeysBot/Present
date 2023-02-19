@@ -1,6 +1,4 @@
-﻿using CSharpVitamins;
-
-namespace Present.Data;
+﻿namespace Present.Data;
 
 /// <summary>
 ///     Represents a giveaway.
@@ -53,7 +51,7 @@ internal sealed class Giveaway : IEquatable<Giveaway>
     ///     Gets or sets the ID of the giveaway.
     /// </summary>
     /// <value>The giveaway ID.</value>
-    public ShortGuid Id { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
     ///     Gets or sets the image URI for this giveaway.
