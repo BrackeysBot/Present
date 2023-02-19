@@ -42,6 +42,18 @@ internal sealed class Giveaway : IEquatable<Giveaway>
     public DateTimeOffset EndTime { get; set; }
 
     /// <summary>
+    ///     Gets or sets the list of excluded role IDs for this giveaway.
+    /// </summary>
+    /// <value>A <see cref="List{T}" /> of <see cref="ulong" /> representing the excluded role IDs.</value>
+    public List<ulong> ExcludedRoles { get; set; } = new();
+
+    /// <summary>
+    ///     Gets or sets the list of excluded user IDs for this giveaway.
+    /// </summary>
+    /// <value>A <see cref="List{T}" /> of <see cref="ulong" /> representing the excluded user IDs.</value>
+    public List<ulong> ExcludedUsers { get; set; } = new();
+
+    /// <summary>
     ///     Gets or sets the guild ID of the giveaway.
     /// </summary>
     /// <value>The guild ID.</value>

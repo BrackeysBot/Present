@@ -47,7 +47,7 @@ internal sealed partial class GiveawayCommand
         await _giveawayService.UpdateGiveawayLogMessageAsync(giveaway).ConfigureAwait(false);
         await _giveawayService.UpdateGiveawayPublicMessageAsync(giveaway).ConfigureAwait(false);
 
-        embed = _giveawayService.CreateGiveawayInformationEmbed(giveaway);
+        embed = await _giveawayService.CreateGiveawayInformationEmbedAsync(giveaway).ConfigureAwait(false);
         embed.WithColor(DiscordColor.Green);
         embed.WithTitle(EmbedStrings.GiveawayEdited_Title);
         await context.CreateResponseAsync(embed).ConfigureAwait(false);
