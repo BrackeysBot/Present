@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using CSharpVitamins;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Present.Configuration;
@@ -31,7 +30,7 @@ internal sealed class GiveawayService : BackgroundService
     private readonly UserExclusionService _userExclusionService;
     private readonly DiscordClient _discordClient;
     private readonly Random _random;
-    private readonly ConcurrentDictionary<ShortGuid, Giveaway> _giveaways = new();
+    private readonly ConcurrentDictionary<long, Giveaway> _giveaways = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GiveawayService" /> class.
@@ -139,7 +138,6 @@ internal sealed class GiveawayService : BackgroundService
 
         var giveaway = new Giveaway
         {
-            Id = Guid.NewGuid(),
             StartTime = options.StartTime,
             EndTime = options.EndTime,
             CreatorId = options.Creator.Id,
@@ -306,10 +304,10 @@ internal sealed class GiveawayService : BackgroundService
     ///     <see langword="null" />.
     /// </param>
     /// <returns><see langword="true" /> if a matching giveaway was found; otherwise, <see langword="false" />.</returns>
-    public bool TryGetGiveaway(ShortGuid id, [NotNullWhen(true)] out Giveaway? giveaway)
+    public bool TryGetGiveaway(long id, [NotNullWhen(true)] out Giveaway? giveaway)
     {
         giveaway = null;
-        return id != ShortGuid.Empty && _giveaways.TryGetValue(id, out giveaway);
+        return _giveaways.TryGetValue(id, out giveaway);
     }
 
     /// <summary>

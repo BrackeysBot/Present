@@ -1,5 +1,4 @@
-﻿using CSharpVitamins;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using Present.Data;
@@ -12,20 +11,13 @@ internal sealed partial class GiveawayCommand
     [SlashCommand(CommandNames.Redraw, CommandDescriptions.Redraw, false)]
     [SlashRequireGuild]
     public async Task RedrawAsync(InteractionContext context,
-        [Option(OptionNames.Id, OptionDescriptions.RedrawGiveawayId)] string idRaw,
+        [Option(OptionNames.Id, OptionDescriptions.RedrawGiveawayId)] long giveawayId,
         [Option(OptionNames.KeepIds, OptionDescriptions.RedrawKeep)] string? keepIds = null
     )
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithColor(DiscordColor.Red);
         embed.WithTitle(EmbedStrings.InvalidGiveawayId);
-
-        if (!ShortGuid.TryParse(idRaw, out ShortGuid giveawayId))
-        {
-            embed.WithDescription(string.Format(EmbedStrings.InvalidId, idRaw));
-            await context.CreateResponseAsync(embed, true).ConfigureAwait(false);
-            return;
-        }
 
         DiscordGuild guild = context.Guild;
         if (!_giveawayService.TryGetGiveaway(giveawayId, out Giveaway? giveaway) || giveaway.GuildId != guild.Id)
