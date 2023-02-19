@@ -16,7 +16,7 @@ internal sealed class GiveawayConfiguration : IEntityTypeConfiguration<Giveaway>
         builder.ToTable(nameof(Giveaway));
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Id).HasConversion<ShortGuidToBytesConverter>();
+        builder.Property(e => e.Id);
         builder.Property(e => e.StartTime).HasConversion<DateTimeOffsetToBytesConverter>();
         builder.Property(e => e.EndTime).HasConversion<DateTimeOffsetToBytesConverter>();
         builder.Property(e => e.EndHandled);
@@ -27,6 +27,8 @@ internal sealed class GiveawayConfiguration : IEntityTypeConfiguration<Giveaway>
         builder.Property(e => e.Description);
         builder.Property(e => e.ImageUri).HasConversion<UriToStringConverter>();
         builder.Property(e => e.Entrants).HasConversion<UInt64ListToBytesConverter>();
+        builder.Property(e => e.ExcludedRoles).HasConversion<UInt64ListToBytesConverter>();
+        builder.Property(e => e.ExcludedUsers).HasConversion<UInt64ListToBytesConverter>();
         builder.Property(e => e.WinnerCount);
         builder.Property(e => e.WinnerIds).HasConversion<UInt64ListToBytesConverter>();
         builder.Property(e => e.MessageId);

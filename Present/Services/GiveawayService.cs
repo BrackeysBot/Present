@@ -1,6 +1,5 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
-using CSharpVitamins;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Present.Configuration;
@@ -12,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
 using SmartFormat;
-using X10D.Collections;
 using X10D.Core;
 using X10D.DSharpPlus;
 
@@ -31,7 +29,7 @@ internal sealed class GiveawayService : BackgroundService
     private readonly UserExclusionService _userExclusionService;
     private readonly DiscordClient _discordClient;
     private readonly Random _random;
-    private readonly ConcurrentDictionary<ShortGuid, Giveaway> _giveaways = new();
+    private readonly ConcurrentDictionary<long, Giveaway> _giveaways = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GiveawayService" /> class.
@@ -139,7 +137,6 @@ internal sealed class GiveawayService : BackgroundService
 
         var giveaway = new Giveaway
         {
-            Id = Guid.NewGuid(),
             StartTime = options.StartTime,
             EndTime = options.EndTime,
             CreatorId = options.Creator.Id,
@@ -171,7 +168,7 @@ internal sealed class GiveawayService : BackgroundService
     /// <param name="giveaway">The giveaway whose information to fetch.</param>
     /// <returns>A <see cref="DiscordEmbedBuilder" />, populated with information from <paramref name="giveaway" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="giveaway" /> is <see langword="null" />.</exception>
-    public DiscordEmbedBuilder CreateGiveawayInformationEmbed(Giveaway giveaway)
+    public async Task<DiscordEmbedBuilder> CreateGiveawayInformationEmbedAsync(Giveaway giveaway)
     {
         ArgumentNullException.ThrowIfNull(giveaway);
 
@@ -190,7 +187,14 @@ internal sealed class GiveawayService : BackgroundService
         var jumpLink = new Uri($"https://discord.com/channels/{giveaway.GuildId}/{giveaway.ChannelId}/{giveaway.MessageId}");
         string conjugatedEnd = giveaway.EndTime < DateTimeOffset.UtcNow ? EmbedStrings.Ended : EmbedStrings.Ends;
         var entrantsCount = giveaway.Entrants.Count.ToString("N0");
-        var excludedEntrantsCount = giveaway.Entrants.CountWhereNot(e => ValidateUser(e, guild, out _)).ToString("N0");
+        var excludedEntrantsCount = 0;
+        foreach (ulong entrantId in giveaway.Entrants)
+        {
+            DiscordMember? member = await ValidateUserAsync(entrantId, giveaway).ConfigureAwait(false);
+            if (member is null) excludedEntrantsCount++;
+        }
+
+        var excludedEntrants = excludedEntrantsCount.ToString("N0");
 
         embed.AddField(EmbedStrings.Title, giveaway.Title);
         embed.AddField(EmbedStrings.Description, description);
@@ -201,7 +205,7 @@ internal sealed class GiveawayService : BackgroundService
         embed.AddField(conjugatedEnd, Formatter.Timestamp(giveaway.EndTime), true);
         embed.AddField(EmbedStrings.Creator, MentionUtility.MentionUser(giveaway.CreatorId), true);
         embed.AddField(EmbedStrings.Entrants, entrantsCount, true);
-        embed.AddField(EmbedStrings.ExcludedEntrants, excludedEntrantsCount, true);
+        embed.AddField(EmbedStrings.ExcludedEntrants, excludedEntrants, true);
         embed.AddFieldIf(giveaway.ImageUri is not null, "Image", () => Formatter.MaskedUrl("View", giveaway.ImageUri), true);
 
         List<ulong> winnerIds = giveaway.WinnerIds;
@@ -220,11 +224,11 @@ internal sealed class GiveawayService : BackgroundService
     /// <param name="giveaway">The giveaway whose log embed to return.</param>
     /// <returns>The log embed.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="giveaway" /> is <see langword="null" />.</exception>
-    public DiscordEmbed CreateGiveawayLogEmbed(Giveaway giveaway)
+    public async Task<DiscordEmbed> CreateGiveawayLogEmbedAsync(Giveaway giveaway)
     {
         ArgumentNullException.ThrowIfNull(giveaway);
 
-        DiscordEmbedBuilder embed = CreateGiveawayInformationEmbed(giveaway);
+        DiscordEmbedBuilder embed = await CreateGiveawayInformationEmbedAsync(giveaway).ConfigureAwait(false);
         embed.WithTitle(EmbedStrings.GiveawayCreated_Title_NoEmoji);
         embed.WithColor(DiscordColor.Green);
         return embed;
@@ -306,10 +310,10 @@ internal sealed class GiveawayService : BackgroundService
     ///     <see langword="null" />.
     /// </param>
     /// <returns><see langword="true" /> if a matching giveaway was found; otherwise, <see langword="false" />.</returns>
-    public bool TryGetGiveaway(ShortGuid id, [NotNullWhen(true)] out Giveaway? giveaway)
+    public bool TryGetGiveaway(long id, [NotNullWhen(true)] out Giveaway? giveaway)
     {
         giveaway = null;
-        return id != ShortGuid.Empty && _giveaways.TryGetValue(id, out giveaway);
+        return _giveaways.TryGetValue(id, out giveaway);
     }
 
     /// <summary>
@@ -427,7 +431,7 @@ internal sealed class GiveawayService : BackgroundService
             return;
         }
 
-        DiscordEmbedBuilder embed = CreateGiveawayInformationEmbed(giveaway);
+        DiscordEmbedBuilder embed = await CreateGiveawayInformationEmbedAsync(giveaway).ConfigureAwait(false);
         embed.WithTitle(EmbedStrings.GiveawayCreated_Title_NoEmoji);
         embed.WithColor(DiscordColor.Green);
 
@@ -463,7 +467,14 @@ internal sealed class GiveawayService : BackgroundService
             description = $"{description[..1021]}...";
 
         var entrantsCount = giveaway.Entrants.Count.ToString("N0");
-        var excludedEntrantsCount = giveaway.Entrants.CountWhereNot(e => ValidateUser(e, guild, out _)).ToString("N0");
+        var excludedEntrantsCount = 0;
+        foreach (ulong entrantId in giveaway.Entrants)
+        {
+            DiscordMember? member = await ValidateUserAsync(entrantId, giveaway).ConfigureAwait(false);
+            if (member is null) excludedEntrantsCount++;
+        }
+
+        var excludedEntrants = excludedEntrantsCount.ToString("N0");
 
         embed.AddField(EmbedStrings.Title, giveaway.Title);
         embed.AddField(EmbedStrings.Description, description);
@@ -471,7 +482,7 @@ internal sealed class GiveawayService : BackgroundService
         embed.AddField(EmbedStrings.NumberOfWinners, giveaway.WinnerCount, true);
         embed.AddField(EmbedStrings.Duration, (giveaway.EndTime - giveaway.StartTime).Humanize(), true);
         embed.AddField(EmbedStrings.Entrants, entrantsCount, true);
-        embed.AddField(EmbedStrings.ExcludedEntrants, excludedEntrantsCount, true);
+        embed.AddField(EmbedStrings.ExcludedEntrants, excludedEntrants, true);
 
         var winners = new List<DiscordMember>();
         foreach (ulong winnerId in giveaway.WinnerIds)
@@ -520,7 +531,8 @@ internal sealed class GiveawayService : BackgroundService
     ///     The selected winners of the giveaway. The returned list does not include invalid users, users which are no longer in
     ///     the guild, or users with at least one of the excluded role IDs.
     /// </returns>
-    public IReadOnlyList<DiscordMember> SelectWinners(Giveaway giveaway, IEnumerable<DiscordMember>? winnersToKeep = null)
+    public async Task<IReadOnlyList<DiscordMember>> SelectWinnersAsync(Giveaway giveaway,
+        IEnumerable<DiscordMember>? winnersToKeep = null)
     {
         ArgumentNullException.ThrowIfNull(giveaway);
 
@@ -538,7 +550,8 @@ internal sealed class GiveawayService : BackgroundService
             // in the event that there are zero valid winners
             entrants.Remove(randomUserId);
 
-            if (ValidateUser(randomUserId, guild, out DiscordMember? member))
+            DiscordMember? member = await ValidateUserAsync(randomUserId, giveaway).ConfigureAwait(false);
+            if (member is not null)
                 winners.Add(member);
         }
 
@@ -597,7 +610,7 @@ internal sealed class GiveawayService : BackgroundService
             return;
         }
 
-        DiscordEmbed embed = CreateGiveawayLogEmbed(giveaway);
+        DiscordEmbed embed = await CreateGiveawayLogEmbedAsync(giveaway).ConfigureAwait(false);
         await message.ModifyAsync(embed).ConfigureAwait(false);
     }
 
@@ -669,21 +682,25 @@ internal sealed class GiveawayService : BackgroundService
     ///     Validates that the user with the specified ID is a valid participant of giveaways in the specified guild.
     /// </summary>
     /// <param name="userId">The ID of the user to validate.</param>
-    /// <param name="guild">The guild in which to perform the validation check.</param>
-    /// <param name="member">
-    ///     When this method returns, contains the <see cref="DiscordMember" /> with the ID <paramref name="userId" /> that is a
-    ///     member of <paramref name="guild" />.
-    /// </param>
+    /// <param name="giveaway">The giveaway used for validation.</param>
     /// <returns>
-    ///     <see langword="true" /> if the user with the ID <paramref name="userId" /> is a valid a participant of giveaways in
-    ///     <paramref name="guild" />; otherwise, <see langword="false" />. 
+    ///     A <see cref="DiscordMember" /> object encapsulating the member as part of the guild in <paramref name="giveaway" />,
+    ///     if this user satisfies the giveaway requirements; otherwise, <see langword="null" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="guild" /> is <see langword="null" />.</exception>
-    public bool ValidateUser(ulong userId, DiscordGuild guild, [NotNullWhen(true)] out DiscordMember? member)
+    /// <exception cref="ArgumentNullException"><paramref name="giveaway" /> is <see langword="null" />.</exception>
+    public async Task<DiscordMember?> ValidateUserAsync(ulong userId, Giveaway giveaway)
     {
-        ArgumentNullException.ThrowIfNull(guild);
-        member = null;
-        return userId != 0 && guild.Members.TryGetValue(userId, out member) && ValidateMember(member, guild);
+        ArgumentNullException.ThrowIfNull(giveaway);
+
+        DiscordGuild guild = await _discordClient.GetGuildAsync(giveaway.GuildId).ConfigureAwait(false);
+        DiscordMember? member = await guild.GetMemberOrNullAsync(userId).ConfigureAwait(false);
+
+        if (member is null) return null;
+        if (!ValidateMember(member, guild)) return null;
+        if (giveaway.ExcludedUsers.Contains(userId)) return null;
+        if (member.Roles.Any(r => giveaway.ExcludedRoles.Contains(r.Id))) return null;
+
+        return member;
     }
 
     private async Task UpdateFromDatabaseAsync(CancellationToken cancellationToken)
