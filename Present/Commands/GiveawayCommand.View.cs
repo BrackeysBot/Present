@@ -26,7 +26,7 @@ internal sealed partial class GiveawayCommand
             return;
         }
 
-        embed = _giveawayService.CreateGiveawayInformationEmbed(giveaway);
+        embed = await _giveawayService.CreateGiveawayInformationEmbedAsync(giveaway).ConfigureAwait(false);
         embed.WithTitle(EmbedStrings.GiveawayInformation);
 
         await context.CreateResponseAsync(embed).ConfigureAwait(false);

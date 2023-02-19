@@ -147,7 +147,7 @@ internal sealed class ActiveGiveawayService : BackgroundService
         giveaway.EndHandled = true;
         RemoveActiveGiveaway(giveaway);
 
-        IReadOnlyList<DiscordMember> winners = _giveawayService.SelectWinners(giveaway);
+        IReadOnlyList<DiscordMember> winners = await _giveawayService.SelectWinnersAsync(giveaway).ConfigureAwait(false);
         Logger.Info($"Selected {"winner".ToQuantity(winners.Count)} for giveaway {giveaway.Id} ({giveaway.Title})");
         foreach (DiscordMember winner in winners)
             Logger.Info(winner);
